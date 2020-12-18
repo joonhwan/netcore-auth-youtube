@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Http
+@* @model object *@
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1>Home Page</h1>
+<a href="home/secret">Secret</a>
+<br>
+<b>@Context.User.Identity.Name</b>
+</body>
+</html>
