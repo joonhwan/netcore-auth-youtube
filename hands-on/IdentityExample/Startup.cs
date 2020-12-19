@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using GrandmaAuthLib;
+using GrandmaAuthLib.AuthRequirements;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,25 +23,40 @@ namespace IdentityExample
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddInMemoryGrandmaAuth()
-                .AddIdentity<GrandmaUser, GrandmaRole>(options =>
+                .AddInMemoryGrandmaAuth(options =>
                 {
                     options.Password.RequiredLength = 4;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     //options.Password.RequireLowercase = false;
                     options.Password.RequireDigit = false;
-                    
+
                     // no-op
                 })
-                .AddDefaultTokenProviders() // 정말 필요할까? 삼성같은곳에서?
+                .ConfigureApplicationCookie(options =>
+                {
+                    options.Cookie.Name = "Grandma.Auth.Cookie";
+                    options.LoginPath = "/Home/LogIn";
+                })
                 ;
 
-            services.ConfigureApplicationCookie(options =>
+            services.AddAuthorization(options =>
             {
-                options.Cookie.Name = "Grandma.Auth.Cookie";
-                options.LoginPath = "/Home/LogIn";
+                var builder = new AuthorizationPolicyBuilder();
+                var defaultAuthPolicy = builder
+                    .RequireAuthenticatedUser()
+                    // .RequireCustomClaim(ClaimTypes.Name)
+                    .Build();
+                options.DefaultPolicy = defaultAuthPolicy;
+                
+                options.AddPolicy("Admin", builder =>
+                {
+                    builder.RequireClaim(ClaimTypes.Name, "admin", "manager");
+                });
             });
+            
+            
+            
             services.AddControllersWithViews(); //@2
         }
 
@@ -65,5 +84,4 @@ namespace IdentityExample
             });
         }
     }
-
 }

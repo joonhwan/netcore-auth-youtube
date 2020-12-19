@@ -33,6 +33,12 @@ namespace IdentityExample.Controllers
             return View();
         }
 
+        [Authorize(Policy = "Admin")]
+        public IActionResult Manage()
+        {
+            return View();
+        }
+
         public IActionResult Login()
         {
             return View();

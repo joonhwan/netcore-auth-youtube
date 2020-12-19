@@ -32,9 +32,23 @@ namespace GrandmaAuthLib.Store
         {
             AddOrUpdate(new GrandmaUser
             {
-                Name = "bob",
+                Name = "admin",
                 Password = "mirero",
+                Email = "admin@mirero.co.kr",
+                BirthDate = new DateTime(1971, 12, 11)
+            });
+            AddOrUpdate(new GrandmaUser
+            {
+                Name = "bob",
+                Password = "cat",
                 Email = "bob@mirero.co.kr",
+                BirthDate = new DateTime(1971, 12, 11)
+            });
+            AddOrUpdate(new GrandmaUser
+            {
+                Name = "alice",
+                Password = "rabbit",
+                Email = "alice@mirero.co.kr",
                 BirthDate = new DateTime(1971, 12, 11)
             });
         }

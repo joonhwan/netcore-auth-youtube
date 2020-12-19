@@ -17,7 +17,7 @@ namespace GrandmaAuthLib.Store
         public InMemoryUserStore(InMemoryGrandmaAuthStore store)
         {
             var userManagerType = typeof(UserManager<GrandmaUser>);
-            // SignInManager<GrandmaUser>();
+            var signInManagerType = typeof(SignInManager<GrandmaUser>);
             _store = store;
         }
         

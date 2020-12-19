@@ -1,5 +1,8 @@
+using System;
 using System.Threading.Tasks;
+using GrandmaAuthLib.AuthRequirements;
 using GrandmaAuthLib.Store;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +11,7 @@ namespace GrandmaAuthLib
     public static class GrandmaInMemoryExtensions
     {
         
-        public static IServiceCollection AddInMemoryGrandmaAuth(this IServiceCollection services)
+        public static IServiceCollection AddInMemoryGrandmaAuth(this IServiceCollection services, Action<IdentityOptions> setupAction)
         {
             services.AddSingleton<InMemoryGrandmaAuthStore>(); // sort of DB.. 😁
             services.AddTransient<IUserStore<GrandmaUser>, InMemoryUserStore>();
@@ -17,6 +20,12 @@ namespace GrandmaAuthLib
             services.AddScoped<ILookupNormalizer, NoOpLookupNormalizer>();
             services.AddScoped<IPasswordHasher<GrandmaUser>, NoOpPasswordHasher<GrandmaUser>>();
             services.AddScoped<IPasswordValidator<GrandmaUser>, NoOpPasswordValidator<GrandmaUser>>();
+            
+            services.AddScoped<IAuthorizationHandler, CustomClaimRequirementHandler>();
+            var result = services
+                    .AddIdentity<GrandmaUser, GrandmaRole>(setupAction)
+                    .AddDefaultTokenProviders()
+                ;
             return services;
         }
 
