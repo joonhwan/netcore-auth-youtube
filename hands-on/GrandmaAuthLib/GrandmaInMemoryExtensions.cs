@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using GrandmaAuthLib.Authorization;
 using GrandmaAuthLib.Store;
+using GrandmaAuthLib.Transformations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,9 @@ namespace GrandmaAuthLib
             services.AddScoped<IAuthorizationHandler, CustomClaimRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, CookieJarOperationAuthorizationHandler>();
             
+            // claim을 동적으로 변경하거나 추가 하고 싶을때...
+            services.AddScoped<IClaimsTransformation, GrandmaClaimsTransformation>();
+            // claim의 처음 생성을 내맘대로 하고 싶을때(Basic 프로젝트의 HomeController에서 한것처럼..)
             services.AddScoped<IUserClaimsPrincipalFactory<GrandmaUser>, GrandmaUserClaimsPrincipalFactory>();
             
             var result = services
