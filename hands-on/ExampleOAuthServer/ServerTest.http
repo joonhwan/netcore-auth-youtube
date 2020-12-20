@@ -1,0 +1,15 @@
+GET https://{{host}}/home/authenticate
+Accept: application/json
+
+###
+GET https://{{host}}/home/secret
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxOTcxMTIxMSIsImdyYW5kbWEiOiJjb29raWUiLCJuYmYiOjE2MDg0NzIyMDYsImV4cCI6MTYwODQ3NTgwNiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.dOEmSrgPCjRJ96jR_NRUmvlmXD9ASctEyFXQN2BNXoM
+
+###
+GET https://{{host}}/home/secret?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxOTcxMTIxMSIsImdyYW5kbWEiOiJjb29raWUiLCJuYmYiOjE2MDg0NzIyMDYsImV4cCI6MTYwODQ3NTgwNiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.dOEmSrgPCjRJ96jR_NRUmvlmXD9ASctEyFXQN2BNXoM
+Accept: application/json
+
+###
+GET https://{{host}}/home/decode?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxOTcxMTIxMSIsImdyYW5kbWEiOiJjb29raWUiLCJuYmYiOjE2MDg0NzIyMDYsImV4cCI6MTYwODQ3NTgwNiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEifQ.dOEmSrgPCjRJ96jR_NRUmvlmXD9ASctEyFXQN2BNXoM
+Accept: application/json
