@@ -33,6 +33,10 @@ namespace GrandmaAuthLib
             // claim의 처음 생성을 내맘대로 하고 싶을때(Basic 프로젝트의 HomeController에서 한것처럼..)
             services.AddScoped<IUserClaimsPrincipalFactory<GrandmaUser>, GrandmaUserClaimsPrincipalFactory>();
             
+            // 우리가 만든 AuthorizationPolicyProvider 를 써보자.
+            // @NOTE : AddScoped로 하면 에러발생... 왜그런지 잘모르겠다... 아직.. 
+            services.AddSingleton<IAuthorizationPolicyProvider, GrandmaAuthorizationPolicyProvider>();
+            
             var result = services
                     .AddIdentity<GrandmaUser, GrandmaRole>(setupAction)
                     .AddDefaultTokenProviders()

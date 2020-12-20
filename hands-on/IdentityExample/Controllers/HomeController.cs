@@ -56,6 +56,13 @@ namespace IdentityExample.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        
         
         [HttpPost]
         [AllowAnonymous]

@@ -38,6 +38,7 @@ namespace IdentityExample
                 {
                     options.Cookie.Name = "Grandma.Auth.Cookie";
                     options.LoginPath = "/Home/LogIn";
+                    options.AccessDeniedPath = "/Home/AccessDenied";
                 })
                 ;
 
