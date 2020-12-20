@@ -17,6 +17,10 @@ namespace GrandmaAuthLib.Authorization
 
     internal class CustomClaimRequirementHandler : AuthorizationHandler<CustomClaimRequirement>
     {
+        public CustomClaimRequirementHandler()
+        {
+            
+        }
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CustomClaimRequirement requirement)
         {
             var hasClaim = context.User.Claims.Any(claim => claim.Type == requirement.ClaimType);

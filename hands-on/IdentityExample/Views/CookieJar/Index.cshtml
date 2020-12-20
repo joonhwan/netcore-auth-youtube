@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Http
+@* @model object *@
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <title>Cookie Jar</title>
+</head>
+<body>
+<h1>Cookie Jar</h1>
+<ul>
+    <li>
+        <a href="/home/login">LogIn</a>
+    </li>
+    <li>
+        <a href="/home/register">Register</a>
+    </li>
+    <li>
+        <a href="/home/secret">Secret</a>
+    </li>
+    <li>
+        <a href="/home/manage">Manage</a>
+    </li>
+    <li>
+        <a href="/home/logout">LogOut</a>
+    </li>
+</ul>
+
+<h3>Authentication Status</h3>
+@if (User.Identity.IsAuthenticated)
+{
+    var id = User.Identity;
+    <h4>Authenticated!</h4>
+    <ul>
+        <li>Name : @id.Name</li>
+        <li>AuthenticationType : @id.AuthenticationType</li>
+    </ul>
+}
+else
+{
+    <h4>Not Authenticated!</h4>
+}
+
+</body>
+</html>

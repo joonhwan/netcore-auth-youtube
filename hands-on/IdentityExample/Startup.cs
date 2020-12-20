@@ -72,7 +72,7 @@ namespace IdentityExample
                     .RequireAuthenticatedUser()
                     .Build();
                 var authorizeFilter = new AuthorizeFilter(managerPolicy);
-#define EXTREMELY_SECURE_SITE                 
+//#define EXTREMELY_SECURE_SITE                 
 #if EXTREMELY_SECURE_SITE
                 options.Filters.Add(authorizeFilter);
 #endif

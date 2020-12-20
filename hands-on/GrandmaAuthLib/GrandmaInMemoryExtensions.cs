@@ -21,7 +21,11 @@ namespace GrandmaAuthLib
             services.AddScoped<IPasswordHasher<GrandmaUser>, NoOpPasswordHasher<GrandmaUser>>();
             services.AddScoped<IPasswordValidator<GrandmaUser>, NoOpPasswordValidator<GrandmaUser>>();
             
+            // Authorization Handler는 Microsoft.AspNetCore.Authorization.DefaultAuthorizationService(IAuthorizationService의 기본구현)에 
+            // `List<IAuthorizationHandler> _handlers` 로 들어간다. (기본으로 제공되는 Handler가 있으므로, 아래의 2개를 포함해 적어도 3개 이상의 Handler가 있다. )
             services.AddScoped<IAuthorizationHandler, CustomClaimRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, CookieJarOperationAuthorizationHandler>();
+            
             services.AddScoped<IUserClaimsPrincipalFactory<GrandmaUser>, GrandmaUserClaimsPrincipalFactory>();
             
             var result = services
