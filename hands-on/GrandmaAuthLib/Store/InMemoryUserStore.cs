@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +12,8 @@ namespace GrandmaAuthLib.Store
         : IUserStore<GrandmaUser>
         , IUserEmailStore<GrandmaUser>
         , IUserPasswordStore<GrandmaUser>
-        , IUserRoleStore<GrandmaUser>
+        //, IUserRoleStore<GrandmaUser>
+        , IUserClaimStore<GrandmaUser>
     {
         private InMemoryGrandmaAuthStore _store;
 
@@ -162,17 +165,68 @@ namespace GrandmaAuthLib.Store
         public Task<IList<string>> GetRolesAsync(GrandmaUser user, CancellationToken cancellationToken)
         {
             var roles = new List<string>();
+            switch (user.Name.ToLower())
+            {
+                case "admin":
+                    roles.Add("admin");
+                    break;
+                case "bob":
+                    roles.Add("poweruser");
+                    break;
+                default:
+                    roles.Add("user");
+                    break;
+            }
             return Task.FromResult((IList<string>) roles);
         }
 
-        public Task<bool> IsInRoleAsync(GrandmaUser user, string roleName, CancellationToken cancellationToken)
+        public async Task<bool> IsInRoleAsync(GrandmaUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var roles = await GetRolesAsync(user, cancellationToken);
+            return roles.Any(s => s == roleName);
         }
 
         public Task<IList<GrandmaUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<IList<Claim>> GetClaimsAsync(GrandmaUser user, CancellationToken cancellationToken)
+        {
+            var claims = new List<Claim>();
+            switch (user.Name.ToLower())
+            {
+                case "admin":
+                    claims.Add(new Claim(ClaimTypes.Role, "admin"));
+                    break;
+                case "bob":
+                    claims.Add(new Claim(ClaimTypes.Role, "power-user"));
+                    break;
+                default:
+                    claims.Add(new Claim(ClaimTypes.Role, "user"));
+                    break;
+            }
+            return Task.FromResult((IList<Claim>)claims);
+        }
+
+        public Task AddClaimsAsync(GrandmaUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReplaceClaimAsync(GrandmaUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveClaimsAsync(GrandmaUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<GrandmaUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

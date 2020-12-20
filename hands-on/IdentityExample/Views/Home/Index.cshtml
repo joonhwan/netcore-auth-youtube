@@ -32,5 +32,20 @@
     </li>
 </ul>
 
+<h3>Authentication Status</h3>
+@if (User.Identity.IsAuthenticated)
+{
+    var id = User.Identity;
+    <h4>Authenticated!</h4>
+    <ul>
+        <li>Name : @id.Name</li>
+        <li>AuthenticationType : @id.AuthenticationType</li>
+    </ul>
+}
+else
+{
+    <h4>Not Authenticated!</h4>
+}
+
 </body>
 </html>

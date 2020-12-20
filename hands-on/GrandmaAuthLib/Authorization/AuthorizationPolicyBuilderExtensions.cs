@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace GrandmaAuthLib.AuthRequirements
+namespace GrandmaAuthLib.Authorization
 {
     public static class AuthorizationPolicyBuilderExtensions
     {

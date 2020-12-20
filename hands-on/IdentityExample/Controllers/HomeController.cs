@@ -15,11 +15,17 @@ namespace IdentityExample.Controllers
     {
         private readonly UserManager<GrandmaUser> _userManager;
         private readonly SignInManager<GrandmaUser> _signInManager;
+        private readonly IAuthorizationService _authorizationService;
 
-        public HomeController(UserManager<GrandmaUser> userManager, SignInManager<GrandmaUser> signInManager)
+        public HomeController(
+            UserManager<GrandmaUser> userManager, 
+            SignInManager<GrandmaUser> signInManager,
+            IAuthorizationService authorizationService
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _authorizationService = authorizationService;
         }
         // GET
         public IActionResult Index()
@@ -33,7 +39,7 @@ namespace IdentityExample.Controllers
             return View();
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "Manager")]
         public IActionResult Manage()
         {
             return View();
@@ -99,6 +105,20 @@ namespace IdentityExample.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(Index));
         }
-        
+
+        AuthorizationPolicy _helloClaimPolicy = new AuthorizationPolicyBuilder()
+                .RequireClaim("Hello")
+                .Build()
+            ;
+        public async Task<IActionResult> AuthBasedProcess()
+        {
+            var result = await _authorizationService.AuthorizeAsync(User, _helloClaimPolicy);
+            if (result.Succeeded)
+            {
+                // do something when 'Hello' claim exists
+            }
+
+            return Ok();
+        }
     }
 }

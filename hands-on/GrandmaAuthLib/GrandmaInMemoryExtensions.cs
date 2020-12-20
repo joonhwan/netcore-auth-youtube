@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using GrandmaAuthLib.AuthRequirements;
+using GrandmaAuthLib.Authorization;
 using GrandmaAuthLib.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +22,8 @@ namespace GrandmaAuthLib
             services.AddScoped<IPasswordValidator<GrandmaUser>, NoOpPasswordValidator<GrandmaUser>>();
             
             services.AddScoped<IAuthorizationHandler, CustomClaimRequirementHandler>();
+            services.AddScoped<IUserClaimsPrincipalFactory<GrandmaUser>, GrandmaUserClaimsPrincipalFactory>();
+            
             var result = services
                     .AddIdentity<GrandmaUser, GrandmaRole>(setupAction)
                     .AddDefaultTokenProviders()

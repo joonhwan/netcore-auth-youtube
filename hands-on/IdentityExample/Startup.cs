@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GrandmaAuthLib;
-using GrandmaAuthLib.AuthRequirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +21,7 @@ namespace IdentityExample
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services
                 .AddInMemoryGrandmaAuth(options =>
                 {
@@ -42,6 +42,8 @@ namespace IdentityExample
 
             services.AddAuthorization(options =>
             {
+                // 아래 주석처리된 라인은 원래의 Default AuthorizationPolicy 를 만드는 걸 보여줌.
+                // (즉, 아래처럼 굳이 다시 만들필요가 없음)
                 var builder = new AuthorizationPolicyBuilder();
                 var defaultAuthPolicy = builder
                     .RequireAuthenticatedUser()
@@ -49,13 +51,13 @@ namespace IdentityExample
                     .Build();
                 options.DefaultPolicy = defaultAuthPolicy;
                 
-                options.AddPolicy("Admin", builder =>
+                // 새로운  "Manager" 라는 이름의 Policy를 추가함.
+                options.AddPolicy("Manager", builder =>
                 {
-                    builder.RequireClaim(ClaimTypes.Name, "admin", "manager");
+                    // Role 이 admin 또는 power-user 인 걸 요구하는 policy가 되도록 설정하고 있음.
+                    builder.RequireClaim(ClaimTypes.Role, "admin", "power-user");
                 });
             });
-            
-            
             
             services.AddControllersWithViews(); //@2
         }

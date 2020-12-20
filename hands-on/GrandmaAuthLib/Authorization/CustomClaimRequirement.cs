@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace GrandmaAuthLib.AuthRequirements
+namespace GrandmaAuthLib.Authorization
 {
     // Microsoft.AspNetCore.Authorization 이 이미 구현한 걸 다시 한번 구현해봄. 
     internal class CustomClaimRequirement : IAuthorizationRequirement
