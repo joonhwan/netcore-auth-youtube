@@ -45,17 +45,20 @@ namespace IdentityExample.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
         
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string username, string password, string returnUrl)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -83,6 +86,7 @@ namespace IdentityExample.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(string username, string password, string email)
         {
             var user = new GrandmaUser
