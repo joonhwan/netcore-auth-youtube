@@ -22,7 +22,7 @@ namespace IdentityExample.Controllers
             {
                 CookieJarId = "choco.cookie.01" // from Request or.... DB... or... somewhere else
             };
-            var result = await _authorizationService.AuthorizeAsync(User, cookieJarResource, CookieJarOperations.LookRequirement);
+            var result = await _authorizationService.AuthorizeAsync(User, cookieJarResource, CookieJarOperations.TakeRequirement);
             if (result.Succeeded)
             {
                 return View();
