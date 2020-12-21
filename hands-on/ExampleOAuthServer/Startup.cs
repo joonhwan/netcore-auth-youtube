@@ -33,8 +33,8 @@ namespace OAuthServer
                             }
                             return Task.CompletedTask;
                         }
-
                     };
+                    // [Authorize] 라고 tagging 된 메소드들은 아래 파라메터로 Validation을 수행.
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidIssuer = Constants.Issuer,

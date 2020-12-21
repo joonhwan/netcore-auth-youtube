@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -70,6 +72,8 @@ namespace OAuthServer.Controllers
             string client_id
         )
         {
+            await Task.Delay(0); // dummy
+            
             //  STEP 1 : 여기서 code 값의 validation 수행(예: expire? match?... )
             
             // STEP 2 : Jwt Token 을 발행.
@@ -124,6 +128,22 @@ namespace OAuthServer.Controllers
             //
             // return Redirect(redirect_uri);
             return Json(responseObject);
+        }
+
+        [Authorize]
+        public IActionResult Validate()
+        {
+            if (HttpContext.Request.Query.TryGetValue("access_token", out var accessToken))
+            {
+                // TODO access_token 을 검증.
+                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+                if (jwt.Claims.Any(claim => claim.Type == "grandma"))
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest();
         }
     }
 }
