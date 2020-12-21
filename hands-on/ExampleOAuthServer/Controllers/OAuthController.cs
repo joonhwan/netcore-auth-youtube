@@ -69,7 +69,8 @@ namespace OAuthServer.Controllers
             string grant_type, // flow of access_token
             string code,
             string redirect_uri,
-            string client_id
+            string client_id,
+            string refresh_token
         )
         {
             await Task.Delay(0); // dummy
@@ -90,11 +91,13 @@ namespace OAuthServer.Controllers
             );
             var token = new JwtSecurityToken(
                 Constants.Issuer,
-                Constants.Audience, 
+                Constants.Audience,
                 claims,
                 notBefore: DateTime.Now,
                 // @EXPIRE.TEST
-                expires: DateTime.Now.AddMilliseconds(1), //DateTime.Now.AddHours(1),
+                expires: grant_type == "refresh_token" 
+                    ? DateTime.Now.AddMinutes(5)  // refresh_token 작업시 반환되는 넘은 reasonable한 expire.
+                    : DateTime.Now.AddMilliseconds(1), // 존나 빨리 expire되는 초기 access_token.
                 signingCredentials: signingCredentials 
             );
             var accessToken   = new JwtSecurityTokenHandler().WriteToken(token);
@@ -119,7 +122,8 @@ namespace OAuthServer.Controllers
             {
                 access_token = accessToken,
                 token_type = "Bearer",
-                raw_claim = "oauth.tutorial" // example_parameter 같은... 사용자 정의 
+                raw_claim = "oauth.tutorial", // example_parameter 같은... 사용자 정의
+                refresh_token = "sample_refresh_token_value_1"
             };
             
             // // STEP 3 : Redirect() 응답메시지의 본문에 responseObject 를 기록. 
