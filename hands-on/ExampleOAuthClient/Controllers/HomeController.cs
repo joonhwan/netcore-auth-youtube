@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace ExampleOAuthClient.Controllers
 {
@@ -31,6 +33,36 @@ namespace ExampleOAuthClient.Controllers
         [Authorize]
         public async Task<IActionResult> Secret()
         {
+            {
+                // var serverClient = _httpClientFactory.CreateClient();
+                // serverClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                // var response = await serverClient.GetAsync("https://localhost:5001/secret");
+                var response = await RequestSecurelyAsync("https://localhost:5001/secret");
+                if (response.IsSuccessStatusCode)
+                {
+                    ViewData["OAuth Server API Response Content"] = await response.Content.ReadAsStringAsync();
+                }
+            
+                ViewData["OAuth Server API Response Code"] = response.StatusCode.ToString();
+            }
+            
+            // await RefreshAccessToken(); // 위에서 token expire로 실패하더라도, 여기서 refresh 하면.. 
+            //
+            // var accessToken = await HttpContext.GetTokenAsync("access_token"); // expire 안된 새로운 token이 수신된다. 
+            
+            {
+                // var apiClient = _httpClientFactory.CreateClient();
+                // apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                // var response = await apiClient.GetAsync("https://localhost:5021/secret");
+                var response = await RequestSecurelyAsync("https://localhost:5021/secret");
+                if (response.IsSuccessStatusCode)
+                {
+                    ViewData["API Server Response Content"] = await response.Content.ReadAsStringAsync();
+                }
+
+                ViewData["API Server Response Code"] = response.StatusCode.ToString();
+            }
+            
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
             ViewData["access_token"] = accessToken ?? "{NULL}";
@@ -42,37 +74,10 @@ namespace ExampleOAuthClient.Controllers
                 ViewData[$"claim[{claim.Type}]"] = claim.Value;
             }
 
-            {
-                var serverClient = _httpClientFactory.CreateClient();
-                serverClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-                var response = await serverClient.GetAsync("https://localhost:5001/secret");
-                if (response.IsSuccessStatusCode)
-                {
-                    ViewData["OAuth Server API Response Content"] = await response.Content.ReadAsStringAsync();
-                }
-
-                ViewData["OAuth Server API Response Code"] = response.StatusCode.ToString();
-            }
-            
-            await RefreshAccessToken(); // 위에서 token expire로 실패하더라도, 여기서 refresh 하면.. 
-            
-            accessToken = await HttpContext.GetTokenAsync("access_token"); // expire 안된 새로운 token이 수신된다. 
-            
-            {
-                var apiClient = _httpClientFactory.CreateClient();
-                apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-                var response = await apiClient.GetAsync("https://localhost:5021/secret");
-                if (response.IsSuccessStatusCode)
-                {
-                    ViewData["API Server Response Content"] = await response.Content.ReadAsStringAsync();
-                }
-
-                ViewData["API Server Response Code"] = response.StatusCode.ToString();
-            }
             return View();
         }
 
-        public async Task<IActionResult> RefreshAccessToken()
+        private async Task<string> RefreshAccessToken()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
@@ -118,7 +123,38 @@ namespace ExampleOAuthClient.Controllers
             
             // sign in with "updated" info.
             await HttpContext.SignInAsync(Constants.SchemeName, authInfo.Principal, authInfo.Properties);
-            return Ok();
+
+            return newAccessToken;
+        }
+        
+        // @NOTE: 특정 url에 요청을 하되, 현재의 access_token 으로 Unauthorized(=401) 의 status code가 나오면 refresh_token 을 한 다음 재시도 한다.
+        // --> refresh token 을 server side에만 두고, front end 는 access_token 만으로 동작하게 할 수 있다면, 보안성이 높아진단다("refresh_token"이 Back-channel에 머문다"고 한다)
+        private async Task<HttpResponseMessage> RequestSecurelyAsync(string url, HttpMethod method = null, Action<HttpRequestMessage> configureRequest = null)
+        {
+            var token = await HttpContext.GetTokenAsync("access_token");
+            
+            method ??= HttpMethod.Get;
+            var request = new HttpRequestMessage(method, url);
+            request.Headers.Add(HeaderNames.Authorization, $"Bearer {token}");
+            configureRequest?.Invoke(request);
+
+            var client = _httpClientFactory.CreateClient();
+            
+            var response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                token = await RefreshAccessToken();
+                
+                request = new HttpRequestMessage(method, url);
+                request.Headers.Add(HeaderNames.Authorization, $"Bearer {token}");
+                configureRequest?.Invoke(request);
+                
+                response = await client.SendAsync(request);
+            }
+            return response;
         }
     }
+    
+
+    
 }

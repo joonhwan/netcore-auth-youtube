@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
@@ -16,6 +17,13 @@ namespace OAuthServer.Controllers
 {
     public class OAuthController : Controller
     {
+        private readonly ILogger<OAuthController> _logger;
+
+        public OAuthController(ILogger<OAuthController> logger)
+        {
+            _logger = logger;
+        }
+        
         // 처리해야할 데이터 모델은 url 의 query parameter에 담겨 온다. 
         // 내역은 https://tools.ietf.org/html/rfc6749#section-4.1.1  참고
         public IActionResult Authorize(
@@ -100,6 +108,7 @@ namespace OAuthServer.Controllers
                     : DateTime.Now.AddMilliseconds(1), // 존나 빨리 expire되는 초기 access_token.
                 signingCredentials: signingCredentials 
             );
+            _logger.LogInformation($"generated token : grant_type={grant_type}, token={token}");
             var accessToken   = new JwtSecurityTokenHandler().WriteToken(token);
 
             /*

@@ -1,8 +1,8 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OAuth-Client/Server" type="CompoundRunConfigurationType">
-    <toRun name="ExampleApi" type="LaunchSettings" />
     <toRun name="ExampleOAuthClient" type="LaunchSettings" />
-    <toRun name="ExampleOAuthServer: OAuthExample" type="LaunchSettings" />
+    <toRun name="ExampleOAuthServer" type="LaunchSettings" />
+    <toRun name="ExampleApi" type="LaunchSettings" />
     <method v="2" />
   </configuration>
 </component>
