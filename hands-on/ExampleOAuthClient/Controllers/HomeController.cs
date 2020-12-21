@@ -19,6 +19,11 @@ namespace ExampleOAuthClient.Controllers
             ViewData["access_token"] = await HttpContext.GetTokenAsync("access_token") ?? "{NULL}";
             ViewData["refresh_token"] = await HttpContext.GetTokenAsync("refresh_token") ?? "{NULL}";
             ViewData["token_type"] =  await HttpContext.GetTokenAsync("token_type") ?? "{NULL}";
+
+            foreach (var claim in User.Claims)
+            {
+                ViewData[$"claim[{claim.Type}]"] = claim.Value;
+            }
             return View();
         }
     }

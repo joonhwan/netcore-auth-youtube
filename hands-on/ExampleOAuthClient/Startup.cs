@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -86,6 +87,20 @@ namespace ExampleOAuthClient
                     // 의 3가지 정보를 options.StateDataFormat 쪽 어딘가에 저장해 놓고, 
                     // HttpContext.GetTokenAsync("access_token") 해서 얻어 올 수 있게 된다. 
                     options.SaveTokens = true;
+
+                    options.Events = new OAuthEvents
+                    {
+                        OnCreatingTicket = context =>
+                        {
+                            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(context.AccessToken);
+                            var header = jwt.Header.SerializeToJson();
+                            var payload = jwt.Payload.SerializeToJson();
+
+                            context.Identity.AddClaims(jwt.Claims);
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 })
                 ;
             
