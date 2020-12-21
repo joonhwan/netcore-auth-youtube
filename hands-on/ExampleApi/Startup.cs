@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExampleApi.Requirements;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,9 +30,16 @@ namespace ExampleApi
             // "
             // 여기 "Resource Server" 는 결국, 이 Example Api 프로젝트를 의미.
 
-            services.AddAuthentication();
-            // --> authentication scheme 이 없기 때문에, login 하는 거는 이 API 서버에서는 할 수 없다.
-            //   (어디 딴 Web App 에서 챙겨서 가져와...?!)
+            // services.AddAuthentication();
+            // // --> authentication scheme 이 없기 때문에, login 하는 거는 이 API 서버에서는 할 수 없다.
+            // //   (어디 딴 Web App 에서 챙겨서 가져와...?!)
+            services
+                .AddAuthentication("custom.authentication")
+                .AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("custom.authentication", options =>
+                {
+                    // no-op
+                })
+                ;
             
             services.AddAuthorization(options =>
             {
