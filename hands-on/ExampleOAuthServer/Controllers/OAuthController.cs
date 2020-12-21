@@ -93,7 +93,8 @@ namespace OAuthServer.Controllers
                 Constants.Audience, 
                 claims,
                 notBefore: DateTime.Now,
-                expires: DateTime.Now.AddHours(1),
+                // @EXPIRE.TEST
+                expires: DateTime.Now.AddMilliseconds(1), //DateTime.Now.AddHours(1),
                 signingCredentials: signingCredentials 
             );
             var accessToken   = new JwtSecurityTokenHandler().WriteToken(token);

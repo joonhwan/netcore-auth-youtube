@@ -40,6 +40,8 @@ namespace OAuthServer
                         ValidIssuer = Constants.Issuer,
                         ValidAudience = Constants.Audience,
                         IssuerSigningKey = Constants.IssuerSigningSecurityKey,
+                        
+                        ClockSkew = TimeSpan.Zero, // @EXPIRE.TEST  서버간 시간왜곡을 보완하기 위한 값 😁 기본값은 5분. 
                     };
                 });
             
