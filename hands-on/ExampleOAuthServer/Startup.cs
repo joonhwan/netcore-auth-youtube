@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +42,12 @@ namespace OAuthServer
                         IssuerSigningKey = Constants.IssuerSigningSecurityKey,
                     };
                 });
-            services.AddControllersWithViews();
+            
+            services
+                .AddControllersWithViews()
+                // Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation 패키지를 설치하면 cshtml에 대해, HMR 같은 걸 할 수 있다.
+                .AddRazorRuntimeCompilation()
+                ;  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

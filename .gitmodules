@@ -1,0 +1,3 @@
+[submodule "author-code"]
+	path = author-code
+	url = git@github.com:T0shik/aspnetcore3-authentication.git

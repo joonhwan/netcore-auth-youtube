@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrandmaAuthLib", "GrandmaAu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleOAuthServer", "ExampleOAuthServer\ExampleOAuthServer.csproj", "{1D818287-4B05-4229-B32B-E523EA064831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleOAuthClient", "ExampleOAuthClient\ExampleOAuthClient.csproj", "{455F6DCC-8FEA-490A-BF8E-78BDFCB66341}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{1D818287-4B05-4229-B32B-E523EA064831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D818287-4B05-4229-B32B-E523EA064831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D818287-4B05-4229-B32B-E523EA064831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{455F6DCC-8FEA-490A-BF8E-78BDFCB66341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455F6DCC-8FEA-490A-BF8E-78BDFCB66341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455F6DCC-8FEA-490A-BF8E-78BDFCB66341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455F6DCC-8FEA-490A-BF8E-78BDFCB66341}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

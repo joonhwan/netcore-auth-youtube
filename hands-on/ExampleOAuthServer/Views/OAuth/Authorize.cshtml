@@ -1,0 +1,22 @@
+﻿@model string
+
+@{
+    Layout = null;
+    var url = $"/oauth/authorize{Model}";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OAuth-Authorize Page</title>
+</head>
+<body>
+
+<form action="@url" method="post">
+    <input type="text" name="username"/>
+    <input type="submit" value="submit"/>
+</form>
+
+
+</body>
+</html> 
