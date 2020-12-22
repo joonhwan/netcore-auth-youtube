@@ -1,3 +1,6 @@
 [submodule "author-code"]
 	path = author-code
 	url = git@github.com:T0shik/aspnetcore3-authentication.git
+[submodule "idsvr4-without-ef"]
+	path = idsvr4-without-ef
+	url = git@github.com:intelliBrain/IdP.git
