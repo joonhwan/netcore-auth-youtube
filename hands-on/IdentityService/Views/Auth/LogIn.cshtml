@@ -1,0 +1,35 @@
+﻿@model IdentityService.Models.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Identity Service</title>
+</head>
+<body>
+<h2>Identity Service - Login Page</h2>
+<form asp-controller="Auth" asp-action="Login" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    <div>
+        <label>UserName</label>
+        <input asp-for="Username"/>
+    </div>
+    <div>
+        <label>Password</label>
+        <input asp-for="Password"/>
+    </div>
+    <div>
+        <button type="submit">Sign In</button>
+    </div>
+</form>
+<div>
+    @* register 페이지 방문시 return url 을 기억할 수 있어야 Login 페이지로 들어오기전 페이지로 register 후 돌아갈 수 있겠지? *@
+    <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">Register</a>
+</div>
+
+</body>
+</html>

@@ -34,6 +34,7 @@ namespace IdentityService
 
         public static IEnumerable<Client> Clients => new List<Client>
         {
+            // machine to machine 인증을 위한 사례
             new Client
             {
                 ClientId = "any_client",
@@ -53,6 +54,8 @@ namespace IdentityService
                     "api.2"
                 },
             },
+            
+            // human to machine 인증을 위한 사례 - LogIn 화면이 보여지고, Consent를 처리하고...  
             new Client
             {
                 ClientId = "my.secured.mvc.webapp",
@@ -77,6 +80,8 @@ namespace IdentityService
                 RedirectUris = {"https://localhost:60001/signin-oidc"},  
                 // 위의 url 에 hit 하면, 클라이언트는 자동으로 Login Page로 Redirect 되어야 한다(마찬가지로 클라이언트측 
                 // OpenID Connect 라이브러리가 해당 작업을 수행한다)
+                
+                RequireConsent = false, // IdentityServer4 v3 에서는 기본값이 true 였나보다. v4 에서는 false가 기본값
             }
         };
     }

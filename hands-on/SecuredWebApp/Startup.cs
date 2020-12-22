@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace SecuredWebApp
 {
@@ -24,7 +27,7 @@ namespace SecuredWebApp
                 })
                 .AddCookie("my.cookie.auth", options =>
                 {
-                    // no-op
+                    // no-op 
                 })
                 // Microsoft.AspNetCore.Authentication.OpenIdConnect 패키지가 제공하는 클라이언트용 OpenID Connection 라이브러리
                 // 사양에 대해서 강사가 언급한 페이지 : https://openid.net/specs/openid-connect-core-1_0.html
@@ -52,8 +55,14 @@ namespace SecuredWebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            app.Use(async (context, next) =>
+            {
+                logger.LogInformation($"@ -------  @ {context.Request.GetDisplayUrl()}");
+                await next.Invoke();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
