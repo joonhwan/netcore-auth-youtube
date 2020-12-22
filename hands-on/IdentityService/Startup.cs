@@ -20,6 +20,7 @@ namespace IdentityService
         {
             services
                 .AddIdentityServer()
+                .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryApiResources(Config.ApiResources)
                 .AddInMemoryClients(Config.Clients)
