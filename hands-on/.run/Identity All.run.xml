@@ -1,0 +1,9 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Identity All" type="CompoundRunConfigurationType">
+    <toRun name="ApiTwo" type="LaunchSettings" />
+    <toRun name="IdentityService" type="LaunchSettings" />
+    <toRun name="SecuredWebApp" type="LaunchSettings" />
+    <toRun name="ApiOne" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

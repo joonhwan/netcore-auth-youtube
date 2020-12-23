@@ -47,6 +47,9 @@ namespace SecuredWebApp
                     // mvc 앱을 위해서는 "Authorization Code Flow" 를 선택. 이 경우 "response_type" 은 "code" 값
                     // https://openid.net/specs/openid-connect-core-1_0.html#Authentication 에 있는 "response_type" 값 테이블 참고.
                     options.ResponseType = "code";
+                    
+                    // @AddClaimToIdToken
+                    options.Scope.Add("mirero.scope"); 
                 })
                 ;
             

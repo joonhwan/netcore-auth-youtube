@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,9 @@ namespace IdentityService
                 var user = new IdentityUser("bob");
 
                 userManager.CreateAsync(user, "mirero").GetAwaiter().GetResult();
+                
+                // 사용자 'bob' 에게 "mirero.role=manager" 의 정보를 추가. see @AddClaimToIdToken
+                userManager.AddClaimAsync(user, new Claim("mirero.role", "manager")).GetAwaiter().GetResult();
             }
 
             host.Run();
