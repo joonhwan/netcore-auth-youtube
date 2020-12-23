@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,11 +49,23 @@ namespace SecuredWebApp
                     // https://openid.net/specs/openid-connect-core-1_0.html#Authentication 에 있는 "response_type" 값 테이블 참고.
                     options.ResponseType = "code";
                     
-                    // @AddClaimToIdToken
-                    options.Scope.Add("mirero.scope"); 
+                    // see @AddClaimToIdToken
+                    options.Scope.Clear(); // reset to remote 'profile' scope.
+                    options.Scope.Add("openid");
+                    options.Scope.Add("scope.mirero.api.type.secret");
+                    options.Scope.Add("scope.mirero.api.type.gateway");
+                    options.Scope.Add("scope.mirero.profile");
+
+                    // see @UserInfoEndpoint 
+                    // Id Token 이 아니라, discoveryDocument 에 있는 userinfo 엔드포인트로에서 사용자 정보(=Claim)을 수집.
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    
+                    options.ClaimActions.DeleteClaims("amr");
+                    options.ClaimActions.MapUniqueJsonKey("mirero_role", "mirero.role");
                 })
                 ;
-            
+
+            services.AddHttpClient();
             
             services.AddControllersWithViews();
         }

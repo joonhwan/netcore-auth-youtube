@@ -24,7 +24,7 @@ namespace ApiTwo
                     options.Authority = "https://localhost:50001";
                     // options.MetadataAddress  값 : host/.well-known/openid-configuration
 
-                    options.Audience = "api-two"; // see @API.Resource. 에 있는 키?
+                    options.Audience = "audience.mirero.gateway.api"; // see @API.Resource. 에 있는 키?
                 })
                 ;
 
