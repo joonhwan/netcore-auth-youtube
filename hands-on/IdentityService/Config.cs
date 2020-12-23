@@ -85,7 +85,7 @@ namespace IdentityService
             // human to machine 인증을 위한 사례 - LogIn 화면이 보여지고, Consent를 처리하고...  
             new Client
             {
-                ClientId = "my.secured.mvc.webapp",
+                ClientId = "mirero.secured.mvc.app",
                 ClientSecrets =
                 {
                     // @MVC.Secret
@@ -130,7 +130,10 @@ namespace IdentityService
                 Claims = new List<ClientClaim>
                 {
                     new ClientClaim("mirero.id.server", "v1.0")
-                }
+                },
+                
+                // @OfflineAccess
+                AllowOfflineAccess = true,
             }
         };
     }

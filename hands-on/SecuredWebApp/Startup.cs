@@ -41,7 +41,7 @@ namespace SecuredWebApp
                 {
                     // 여기의 설정은 결국 "IdentityService" 프로젝트를 가리킨다. 
                     options.Authority = "https://localhost:50001";
-                    options.ClientId = "my.secured.mvc.webapp";
+                    options.ClientId = "mirero.secured.mvc.app";
                     options.ClientSecret = "very_secret_key_of_web_app"; // see @MVC.Secret 
                     options.SaveTokens = true; // access_token, refresh_token 을 수신하면 저장해둔다.
                     
@@ -55,6 +55,7 @@ namespace SecuredWebApp
                     options.Scope.Add("scope.mirero.api.type.secret");
                     options.Scope.Add("scope.mirero.api.type.gateway");
                     options.Scope.Add("scope.mirero.profile");
+                    options.Scope.Add("offline_access"); // see @OfflineAccess
 
                     // see @UserInfoEndpoint 
                     // Id Token 이 아니라, discoveryDocument 에 있는 userinfo 엔드포인트로에서 사용자 정보(=Claim)을 수집.
