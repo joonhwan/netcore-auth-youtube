@@ -4,6 +4,7 @@
     <toRun name="IdentityService" type="LaunchSettings" />
     <toRun name="SecuredWebApp" type="LaunchSettings" />
     <toRun name="ApiOne" type="LaunchSettings" />
+    <toRun name="SecuredJsWebApp" type="LaunchSettings" />
     <method v="2" />
   </configuration>
 </component>

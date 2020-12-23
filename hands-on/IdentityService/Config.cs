@@ -134,6 +134,32 @@ namespace IdentityService
                 
                 // @OfflineAccess
                 AllowOfflineAccess = true,
+            },
+            new Client()
+            {
+                ClientId = "mirero.secured.web.app",
+                
+                // ClientSecrets =
+                // {
+                //     new Secret("very_secret_key_of_web_app".ToSha256())
+                // },
+                RequireClientSecret = false,
+                
+                AllowedGrantTypes = GrantTypes.Implicit,
+                RedirectUris = {"https://localhost:60011/signin"},
+                AllowedScopes =
+                {
+                    // see @Scope.Names 참고
+                    IdentityServerConstants.StandardScopes.OpenId, // "openid"
+                    // 아래 주석처리 --> see @UserInfoEndpoint 
+                    //IdentityServerConstants.StandardScopes.Profile, // "profile"
+                    "scope.mirero.api.type.secret",
+                    //"scope.mirero.api.type.gateway",
+                    //"scope.mirero.profile", // @AddClaimToIdToken 사용자 정의된 scope 를 추가
+                },
+                
+                AllowAccessTokensViaBrowser = true,
+                RequireConsent = false,
             }
         };
     }
