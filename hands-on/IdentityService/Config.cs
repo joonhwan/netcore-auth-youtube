@@ -24,8 +24,9 @@ namespace IdentityService
                 Description = "Mirero Co. LTD specific Data",
                 UserClaims =
                 {
-                    // identity 에 포함되어야할 사용자 정의 claim  
-                    "mirero.role", 
+                    // identity 에 포함되어야할 사용자 정의 claim
+                    "name",
+                    "mirero.role",
                 }
             }
         };
@@ -155,7 +156,7 @@ namespace IdentityService
                     //IdentityServerConstants.StandardScopes.Profile, // "profile"
                     "scope.mirero.api.type.secret",
                     //"scope.mirero.api.type.gateway",
-                    //"scope.mirero.profile", // @AddClaimToIdToken 사용자 정의된 scope 를 추가
+                    "scope.mirero.profile", // @AddClaimToIdToken 사용자 정의된 scope 를 추가
                 },
                 AllowedCorsOrigins =
                 {
@@ -164,6 +165,7 @@ namespace IdentityService
                 
                 AllowAccessTokensViaBrowser = true,
                 RequireConsent = false,
+                AccessTokenLifetime = 30, // 테스트를 위해 30초만. (디폴트는 3600초=1시간)
             }
         };
     }

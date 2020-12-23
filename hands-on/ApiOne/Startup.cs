@@ -36,6 +36,17 @@ namespace ApiOne
                 ;
             
             services.AddControllers(); // API 이므로 AddControllersWithViews 할 필요가 없다.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        ;
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +58,7 @@ namespace ApiOne
             }
 
             app.UseRouting();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
