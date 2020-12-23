@@ -157,6 +157,10 @@ namespace IdentityService
                     //"scope.mirero.api.type.gateway",
                     //"scope.mirero.profile", // @AddClaimToIdToken 사용자 정의된 scope 를 추가
                 },
+                AllowedCorsOrigins =
+                {
+                    "https://localhost:60011"
+                },
                 
                 AllowAccessTokensViaBrowser = true,
                 RequireConsent = false,
