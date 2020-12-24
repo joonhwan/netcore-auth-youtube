@@ -136,17 +136,19 @@ namespace IdentityService
                 // @OfflineAccess
                 AllowOfflineAccess = true,
             },
+            // SPA 를 위한 Implicit Flow 
             new Client()
             {
                 ClientId = "mirero.secured.web.app",
                 
-                // ClientSecrets =
-                // {
-                //     new Secret("very_secret_key_of_web_app".ToSha256())
-                // },
+                // 원래 client secret 이 있으면 좋지만, SPA의 경우, javascript 코드에 
+                // 박힐 수 밖에 읍다. 따라서 여기에서는 그냥 client secret 없이 하는 거 같다. ?
+                // --> 말이 되나?  
+                // ClientSecrets = { new Secret("very_secret_key_of_web_app".ToSha256()) },
                 RequireClientSecret = false,
                 
                 AllowedGrantTypes = GrantTypes.Implicit,
+                // 인증서버가 로그인을 역으로 알려줄 수 있는 웹앱의 사이트주소(잠깐동안 스쳐가는 페이지.)
                 RedirectUris = {"https://localhost:60011/signin"},
                 AllowedScopes =
                 {
@@ -155,7 +157,7 @@ namespace IdentityService
                     // 아래 주석처리 --> see @UserInfoEndpoint 
                     //IdentityServerConstants.StandardScopes.Profile, // "profile"
                     "scope.mirero.api.type.secret",
-                    //"scope.mirero.api.type.gateway",
+                    "scope.mirero.api.type.gateway",
                     "scope.mirero.profile", // @AddClaimToIdToken 사용자 정의된 scope 를 추가
                 },
                 AllowedCorsOrigins =
@@ -165,7 +167,7 @@ namespace IdentityService
                 
                 AllowAccessTokensViaBrowser = true,
                 RequireConsent = false,
-                AccessTokenLifetime = 30, // 테스트를 위해 30초만. (디폴트는 3600초=1시간)
+                AccessTokenLifetime = 5, // 테스트를 위해 30초만. (디폴트는 3600초=1시간)
             }
         };
     }

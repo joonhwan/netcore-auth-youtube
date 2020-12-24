@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ApiOne
 {
@@ -32,6 +33,12 @@ namespace ApiOne
                     // var existingTvp = options.TokenValidationParameters;
                     // existingTvp.ValidateAudience = false;
                     options.Audience = "audience.mirero.secret.api";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        
+                        ClockSkew = TimeSpan.FromSeconds(10), // TokenValidationParameters.DefaultClockSkew = 5분 
+                    };
                 })
                 ;
             
