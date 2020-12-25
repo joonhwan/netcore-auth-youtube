@@ -1,16 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using IdentityService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mirero.Identity.Models;
 
 namespace IdentityService.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<MireroUser> _signInManager;
+        private readonly UserManager<MireroUser> _userManager;
 
-        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AuthController(SignInManager<MireroUser> signInManager, UserManager<MireroUser> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -64,7 +66,14 @@ namespace IdentityService.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser(vm.Username);
+                var user = new MireroUser
+                {
+                    KeyOrId = Guid.NewGuid().ToString(),
+                    Email = vm.Email,
+                    Name = vm.Username,
+                    // Password = vm.Password, // MireroUser 같이 unsafe password scheme 을 쓰는 경우에는 여기서 password 넣어도 됨 😅
+                    Roles = { "user"}
+                };
                 var result = await _userManager.CreateAsync(user, vm.Password);
 
                 if (result.Succeeded)

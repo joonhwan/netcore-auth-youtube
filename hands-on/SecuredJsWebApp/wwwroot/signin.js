@@ -18,6 +18,6 @@ userManager
     .signinCallback()
     .then(res => {
         console.log("signin callback is called ! res=", res)
-        //window.location.href = "/"; // SPA App 에서는 "/../#PageName" 같이 될 거 같음.
+        window.location.href = "/"; // SPA App 에서는 "/../#PageName" 같이 될 거 같음.
     })
 ;

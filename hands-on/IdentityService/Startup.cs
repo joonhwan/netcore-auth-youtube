@@ -1,19 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer4.Models;
+using IdentityServer4.Stores;
 using IdentityServer4.Validation;
-using IdentityService.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Mirero.Identity;
+using Mirero.Identity.Models;
+using Mirero.Identity.Stores;
+using ClientStore = Mirero.Identity.Stores.ClientStore;
+using PersistedGrantStore = Mirero.Identity.Stores.PersistedGrantStore;
+using ResourceStore = Mirero.Identity.Stores.ResourceStore;
 
 namespace IdentityService
 {
@@ -25,27 +24,23 @@ namespace IdentityService
         {
             // IdentityServer4 를 사용한 IdentityService 자체가 Login 하는 Web App 이므로...
             // --> Microsoft.AspNetCore.Identity.*  계열의 클라이언트 라이브러리 패키지들을 사용해서 로그인을 활성화...
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("identity.test.memory.db");
-            });
+
             services
-                .AddIdentity<IdentityUser, IdentityRole>(options =>
+                .AddMireroIdentity(options => { })
+                .ConfigureApplicationCookie(options =>
                 {
-                    // SUPER SIMPLE PASSWORD!!!!
-                    options.Password.RequiredLength = 4;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
+                    options.Cookie.Name = "is4.cookie";
+                    options.LoginPath = "/Auth/Login";
                 })
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders()
                 ;
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.Name = "is4.cookie";
-                options.LoginPath = "/Auth/Login";
-            });
+            
+            // var relavantTypes  = new [] {typeof(IUserProfil
+            services
+                .AddTransient<IPersistedGrantStore, PersistedGrantStore>()
+                .AddTransient<IDeviceFlowStore, DeviceFlowStore>()
+                // 
+                // .AddSingleton<IHostedService, TokenCleanupHost>()
+                ;
             
             services
                 .AddIdentityServer()
@@ -59,13 +54,22 @@ namespace IdentityService
                 // - ...
                 //  
                 //  --> 이런것들이 `AddAspNetidentity<T>()` 가 하는일.
-                .AddAspNetIdentity<IdentityUser>()
+                .AddAspNetIdentity<MireroUser>()
                 // 
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryApiResources(Config.ApiResources)
-                .AddInMemoryClients(Config.Clients)
+                // .AddInMemoryIdentityResources(Config.IdentityResources)
+                // .AddInMemoryApiScopes(Config.ApiScopes)
+                // .AddInMemoryApiResources(Config.ApiResources)
+                // .AddInMemoryClients(Config.Clients)
+                //
+                // 만일, 기존의  EntityFramework 기반 설정 저장소를 쓰려면, `AddConfigurationStore(..)` 을 수행.
+                // --> DbContext를 만들고, Client, Resource, CorsPolicy 를 가져오는 Store들을 등록한다. 
+                // 여기에서는 Client, Resource, CorsPolicyService 를 직접 하나 하나 만든것으로 대체.
+                .AddClientStore<ClientStore>()
+                .AddResourceStore<ResourceStore>()
+                .AddCorsPolicyService<CorsPolicyService>()
+                //.AddOperationalStore()
                 .AddDeveloperSigningCredential()
+                // .AddProfileService<>()
                 ;
 
             var t = typeof(ITokenRequestValidator);
