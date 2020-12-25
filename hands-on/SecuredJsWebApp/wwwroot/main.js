@@ -67,25 +67,29 @@ axios.interceptors.response.use(
                 refreshing = true;
 
                 // do the refresh
-                return userManager.signinSilent().then(user => {
-                    // signin 성공 -> refreshing 종료 
-                    refreshing = false; 
+                return userManager
+                    .signinSilent()
+                    .then(user => {
+                        // 새로 발급된 access_token...등의 유효 기간 확인
+                        const expire_at = new Date(user.expires_at * 1000)
+                        console.log("new access_token expires at ", expire_at.toISOString());
 
-                    // 새로 발급된 access_token...등의 유효 기간 확인
-                    const expire_at = new Date(user.expires_at * 1000)
-                    console.log("new access_token expires at ", expire_at.toISOString());
-                    
-                    // 이후, axios 를 통한 모든 request 에서 쓸 공통 헤더를 갱신
-                    axios.defaults.headers.common["Authorization"] = "Bearer " + user.access_token;
+                        // 이후, axios 를 통한 모든 request 에서 쓸 공통 헤더를 갱신
+                        axios.defaults.headers.common["Authorization"] = "Bearer " + user.access_token;
 
-                    // 현 request 를 새로운 access_token 으로 다시 시도.
-                    axiosConfig.headers["Authorization"] = "Bearer " + user.access_token;
-                    return axios(axiosConfig);
-                }).catch(() => {
-                    console.error("refresh token 실패")
-                    // signin 실패 -> refreshing 종료.
-                    refreshing = false; 
-                });
+                        // 현 request 를 새로운 access_token 으로 다시 시도.
+                        axiosConfig.headers["Authorization"] = "Bearer " + user.access_token;
+                        return axios(axiosConfig);
+                    })
+                    .catch(() => {
+                        console.error("refresh token 실패")
+                    })
+                    .finally(() => {
+                        // refreshing 종료 
+                        refreshing = false;
+                    })
+                ;
+                
             }
         }
 
