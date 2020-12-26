@@ -1,3 +1,5 @@
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer4.Stores;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Mirero.Identity;
 using Mirero.Identity.Models;
 using Mirero.Identity.Stores;
@@ -18,6 +21,24 @@ namespace IdentityService
 {
     public class Startup
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public Startup(IWebHostEnvironment webHostEnvironment)
+        {
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        private X509Certificate2 Certification
+        {
+            get
+            {
+                var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "mirero.co.kr.pfx");
+                return new X509Certificate2(filePath, "mirero");
+            }
+        }
+
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -42,7 +63,7 @@ namespace IdentityService
                 // 
                 // .AddSingleton<IHostedService, TokenCleanupHost>()
                 ;
-            
+
             services
                 .AddIdentityServer()
                 // Identity4.AspNetIdentity 패키지에서 제공하는 IdentityServer4 - Identity 연동기능 활성화
@@ -69,7 +90,8 @@ namespace IdentityService
                 .AddResourceStore<ResourceStore>()
                 .AddCorsPolicyService<CorsPolicyService>()
                 //.AddOperationalStore()
-                .AddDeveloperSigningCredential()
+                //.AddDeveloperSigningCredential()
+                .AddSigningCredential(Certification)
                 // .AddProfileService<>()
                 ;
 
