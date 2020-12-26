@@ -3,7 +3,7 @@
     authority: "https://localhost:50001",
     client_id: "mirero.secured.web.app",
     redirect_uri: "https://localhost:60011/signin",
-    // post_logout_redirect_uri: "https://localhost:44345/Home/Index",
+    post_logout_redirect_uri: "https://localhost:60011",
     // response_type: "code",
     response_type: "id_token token",
     scope: "openid scope.mirero.profile scope.mirero.api.type.secret scope.mirero.api.type.gateway"
@@ -15,28 +15,37 @@ const signIn = function () {
     userManager.signinRedirect(); // 로그인이 안되어 있으면, 인증서버쪽으로 페이지 이동이 일어난다. 
 };
 
-// const signOut = function () {
-//     userManager.signoutRedirect();
-// };
+const signOut = function () {
+    userManager.signoutRedirect();
+};
 
 // 로그아웃 된 상태이면, Sign In 버튼을 표시하는데 사용.
-const showSignin = visible => {
-    document.getElementById("signin").style.display = visible ? 'block' : 'none';
+const enableSignIn = user => {
+    let username = '';
+    if(user!=null) {
+        username = user.profile.name;
+    }
+    const userSuffix = ` ${username}`;
+    document.getElementById("signin").style.display = (user==null ? 'block' : 'none');
+    document.getElementById("signout").style.display = (user!=null ? 'block' : 'none');
+    document.getElementById("username").innerText = userSuffix;
 }
 
-userManager.getUser().then(user => {
-    //console.log("user:", user);
-    console.log("found active user : ", user.profile.name)
-    if (user) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + user.access_token;
-    } else {
-        showSignin(true);
-    }
-}).catch(e => {
-    console.log("not logged in state!")
-    console.log(e);
-    showSignin(true);
-});
+userManager
+    .getUser()
+    .then(user => {
+        //console.log("user:", user);
+        console.log("found active user : ", user.profile.name)
+        if (user) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + user.access_token;
+        }
+        enableSignIn(user)
+    })
+    .catch(e => {
+        console.log("not logged in state!")
+        console.log(e);
+        enableSignIn(null);
+    });
 
 const callApi = function () {
     axios.get("https://localhost:51001/api/v1/secret")

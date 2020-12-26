@@ -50,6 +50,11 @@ namespace SecuredWebApp.Controllers
             return View();
         }
 
+        public IActionResult Logout()
+        {
+            return SignOut("secured.web.app.cookie", "mirero.oidc");
+        }
+
         public async Task<string> GetSecretViaApiOne(string accessToken)
         {
             var apiOne = _httpClientFactory.CreateClient();
@@ -90,13 +95,13 @@ namespace SecuredWebApp.Controllers
             });
 
             // get auth info and update it. to .... Cookie!!!
-            var authInfo = await HttpContext.AuthenticateAsync("my.cookie.auth");
+            var authInfo = await HttpContext.AuthenticateAsync("secured.web.app.cookie");
             authInfo.Properties.UpdateTokenValue("id_token", tokenResponse.IdentityToken);
             authInfo.Properties.UpdateTokenValue("access_token", tokenResponse.AccessToken); // 사실 refresh token 에 id token 은 필요 없다.
             authInfo.Properties.UpdateTokenValue("refresh_token", tokenResponse.RefreshToken);
             
             // sign in with "updated" info.
-            await HttpContext.SignInAsync("my.cookie.auth", authInfo.Principal, authInfo.Properties);
+            await HttpContext.SignInAsync("secured.web.app.cookie", authInfo.Principal, authInfo.Properties);
 
             var diff1 = !accessToken.Equals(tokenResponse.AccessToken);
             var diff2 = !idToken.Equals(tokenResponse.IdentityToken);

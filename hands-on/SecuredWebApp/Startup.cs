@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,12 +24,13 @@ namespace SecuredWebApp
             services
                 .AddAuthentication(options =>
                 {
-                    options.DefaultScheme = "my.cookie.auth";
-                    options.DefaultChallengeScheme = "my.openid.connection";
+                    options.DefaultScheme = "secured.web.app.cookie";
+                    options.DefaultChallengeScheme = "mirero.oidc";
                 })
-                .AddCookie("my.cookie.auth", options =>
+                .AddCookie("secured.web.app.cookie", options =>
                 {
-                    // no-op 
+                    // no-op
+                    options.Cookie.Name = "secured.web.app.cookie"; // 실제 쿠키 이름을 바꾸고 싶다면, 여기서. 
                 })
                 // Microsoft.AspNetCore.Authentication.OpenIdConnect 패키지가 제공하는 클라이언트용 OpenID Connection 라이브러리
                 // 사양에 대해서 강사가 언급한 페이지 : https://openid.net/specs/openid-connect-core-1_0.html
@@ -37,7 +39,7 @@ namespace SecuredWebApp
                 //      -  Implicit Flow
                 //      -  Hybrid Flow 
                 // 
-                .AddOpenIdConnect("my.openid.connection", options =>
+                .AddOpenIdConnect("mirero.oidc", options =>
                 {
                     // 여기의 설정은 결국 "IdentityService" 프로젝트를 가리킨다. 
                     options.Authority = "https://localhost:50001";
@@ -48,6 +50,8 @@ namespace SecuredWebApp
                     // mvc 앱을 위해서는 "Authorization Code Flow" 를 선택. 이 경우 "response_type" 은 "code" 값
                     // https://openid.net/specs/openid-connect-core-1_0.html#Authentication 에 있는 "response_type" 값 테이블 참고.
                     options.ResponseType = "code";
+                    
+                    options.SignedOutCallbackPath = "/Home/Index";
                     
                     // see @AddClaimToIdToken
                     options.Scope.Clear(); // reset to remote 'profile' scope.

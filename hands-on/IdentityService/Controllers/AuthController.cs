@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
+using IdentityServer4.Services;
 using IdentityService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +13,13 @@ namespace IdentityService.Controllers
     {
         private readonly SignInManager<MireroUser> _signInManager;
         private readonly UserManager<MireroUser> _userManager;
+        private readonly IIdentityServerInteractionService _interactionService;
 
-        public AuthController(SignInManager<MireroUser> signInManager, UserManager<MireroUser> userManager)
+        public AuthController(SignInManager<MireroUser> signInManager, UserManager<MireroUser> userManager, IIdentityServerInteractionService interactionService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _interactionService = interactionService;
         }
         
         [HttpGet]
@@ -51,6 +55,21 @@ namespace IdentityService.Controllers
             }
 
             return View();
+        }
+
+        [HttpGet] // Redirect 같은걸 하려면 HttpGet이어야 한다?B
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            await _signInManager.SignOutAsync();
+
+            var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
+
+            if (string.IsNullOrEmpty(logoutRequest.PostLogoutRedirectUri))
+            {
+                return Redirect("/"); 
+            }
+
+            return Redirect(logoutRequest.PostLogoutRedirectUri);
         }
 
         public IActionResult Register(string returnUrl)

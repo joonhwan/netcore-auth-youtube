@@ -31,6 +31,7 @@ namespace IdentityService
                 {
                     options.Cookie.Name = "is4.cookie";
                     options.LoginPath = "/Auth/Login";
+                    options.LogoutPath = "/Auth/Logout";
                 })
                 ;
             

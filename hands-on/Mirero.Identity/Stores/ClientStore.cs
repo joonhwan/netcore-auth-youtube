@@ -74,6 +74,8 @@ namespace Mirero.Identity.Stores
                     // SecuredMebApp 프로젝트의 호스트에는 자동적으로 "/signin-oidc" 라는 endpoint가 생긴다 
                     //  --> 이 Endpoint는 WebApp 클라이언트측 OpenID Connection 라이브러리가 미들웨어를 통해 제공하는듯.
                     RedirectUris = {"https://localhost:60001/signin-oidc"},
+                    PostLogoutRedirectUris = {"https://localhost:60001/Home/Index"},
+                    
                     // 위의 url 에 hit 하면, 클라이언트는 자동으로 Login Page로 Redirect 되어야 한다(마찬가지로 클라이언트측 
                     // OpenID Connect 라이브러리가 해당 작업을 수행한다)
 
@@ -116,6 +118,7 @@ namespace Mirero.Identity.Stores
                     AllowedGrantTypes = GrantTypes.Implicit,
                     // 인증서버가 로그인을 역으로 알려줄 수 있는 웹앱의 사이트주소(잠깐동안 스쳐가는 페이지.)
                     RedirectUris = {"https://localhost:60011/signin"},
+                    PostLogoutRedirectUris = { "https://localhost:60011" },
                     AllowedScopes =
                     {
                         // see @Scope.Names 참고
