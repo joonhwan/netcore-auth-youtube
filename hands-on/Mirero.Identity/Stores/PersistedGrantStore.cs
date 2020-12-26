@@ -8,7 +8,7 @@ namespace Mirero.Identity.Stores
     //TODO HACK, LEARN, RE-IMPL
     public class PersistedGrantStore : IPersistedGrantStore
     {
-        private readonly InMemoryPersistedGrantStore _impl = new InMemoryPersistedGrantStore();
+        private static InMemoryPersistedGrantStore _impl = new InMemoryPersistedGrantStore();
 
         public PersistedGrantStore()
         {
