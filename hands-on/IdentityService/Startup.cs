@@ -95,6 +95,16 @@ namespace IdentityService
                 // .AddProfileService<>()
                 ;
 
+            services
+                .AddAuthentication() // AuthenticationBuilder 를 얻기 위해 `AddAuthentication()` 을 한번 더 호출?
+                .AddFacebook(options =>
+                {
+                    options.ClientId = "692568838297610";
+                    options.ClientSecret = "6b335a964d234e0f469d69831ead7d95";
+                    //options.CallbackPath = "/callback" 
+                })
+                ;
+
             var t = typeof(ITokenRequestValidator);
             services.AddControllersWithViews();
         }

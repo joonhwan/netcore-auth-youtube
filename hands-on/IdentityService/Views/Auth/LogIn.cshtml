@@ -12,6 +12,17 @@
 </head>
 <body>
 <h2>Identity Service - Login Page</h2>
+
+<h3>Signin with...</h3>
+<form asp-controller="Auth" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    @foreach (var provider in Model.ExternalProviders)
+    {
+        <button name="provider" value="@provider.Name" type="submit">
+            @provider.DisplayName
+        </button>
+    } 
+</form>
+<h3>Signin with Internal OpenID</h3>
 <form asp-controller="Auth" asp-action="Login" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
     <div>

@@ -15,12 +15,15 @@ namespace Mirero.Identity.Stores
         , IUserPasswordStore<MireroUser>
         , IUserRoleStore<MireroUser>
         , IUserClaimStore<MireroUser>
+        , IUserLoginStore<MireroUser>
     {
         private readonly IMireroUserRepository _repository;
+        private readonly IMireroUserLoginRepository _userLoginRepository;
 
-        public MireroUserStore(IMireroUserRepository repository)
+        public MireroUserStore(IMireroUserRepository repository, IMireroUserLoginRepository userLoginRepository)
         {
             _repository = repository;
+            _userLoginRepository = userLoginRepository;
             var userManagerType = typeof(UserManager<MireroUser>);
             var signInManagerType = typeof(SignInManager<MireroUser>);
             
@@ -213,6 +216,36 @@ namespace Mirero.Identity.Stores
         public Task<IList<MireroUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public Task AddLoginAsync(MireroUser user, UserLoginInfo login, CancellationToken cancellationToken)
+        {
+            var mireroUserLogin = new MireroUserLogin(user, login);
+            _userLoginRepository.Add(mireroUserLogin);
+            return Task.CompletedTask;
+        }
+
+        public Task<MireroUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            var userLogin = _userLoginRepository.FindByProviderKey(loginProvider, providerKey);
+            if (userLogin != null)
+            {
+                return Task.FromResult(_repository.FindUserByKeyOrId(userLogin.KeyOrId));
+            }
+
+            return Task.FromResult<MireroUser>(null);
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(MireroUser user, CancellationToken cancellationToken)
+        {
+            var result = _userLoginRepository.FindByKey(user.KeyOrId).Cast<UserLoginInfo>().ToList() as IList<UserLoginInfo>;
+            return Task.FromResult(result);
+        }
+
+        public Task RemoveLoginAsync(MireroUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            _userLoginRepository.RemoveBy(user.KeyOrId, loginProvider, providerKey);
+            return Task.CompletedTask;
         }
     }
 }

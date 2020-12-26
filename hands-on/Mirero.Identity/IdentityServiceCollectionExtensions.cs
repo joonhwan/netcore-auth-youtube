@@ -18,6 +18,7 @@ namespace Mirero.Identity
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); 
             services.AddTransient<IMireroUserRepository, TestInMemoryMireroUserRepository>();
+            services.AddTransient<IMireroUserLoginRepository, TestInMemoryMireroUserLoginRepository>();
             services.AddTransient<IUserStore<MireroUser>, MireroUserStore>();
             services.AddTransient<IRoleStore<MireroRole>, MireroRoleStore>();
             
@@ -26,7 +27,7 @@ namespace Mirero.Identity
             services.AddScoped<IPasswordValidator<MireroUser>, NoOpPasswordValidator<MireroUser>>();
             
             // claim을 동적으로 변경하거나 추가 하고 싶을때...
-            services.AddScoped<IClaimsTransformation, MireroClaimsTransformation>();
+            services.AddSingleton<IClaimsTransformation, MireroClaimsTransformation>();
             // claim의 처음 생성을 내맘대로 하고 싶을때(Basic 프로젝트의 HomeController에서 한것처럼..)
             services.AddScoped<IUserClaimsPrincipalFactory<MireroUser>, MireroUserClaimsPrincipalFactory>();
             
