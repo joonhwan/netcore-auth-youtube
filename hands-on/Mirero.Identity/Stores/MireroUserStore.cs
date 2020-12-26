@@ -188,18 +188,10 @@ namespace Mirero.Identity.Stores
         public Task<IList<Claim>> GetClaimsAsync(MireroUser user, CancellationToken cancellationToken)
         {
             var claims = new List<Claim>();
-            // switch (user.Name.ToLower())
-            // {
-            //     case "admin":
-            //         claims.Add(new Claim(ClaimTypes.Role, "admin"));
-            //         break;
-            //     case "bob":
-            //         claims.Add(new Claim(ClaimTypes.Role, "power-user"));
-            //         break;
-            //     default:
-            //         claims.Add(new Claim(ClaimTypes.Role, "user"));
-            //         break;
-            // }
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim("mirero.role", role));
+            }
             return Task.FromResult((IList<Claim>)claims);
         }
 

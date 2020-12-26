@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,8 @@ namespace ApiOne
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // jwt token 에 http://schemas.microsoft.com/identity/claims... 같은거가 key로 들어가지 않게.
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); 
             services
                 .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>

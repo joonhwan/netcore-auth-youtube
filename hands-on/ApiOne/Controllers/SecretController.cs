@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +22,11 @@ namespace ApiOne.Controllers
             var claims = User.Claims.ToList();
             var clientId = claims.FirstOrDefault(claim => claim.Type == "client_id")?.Value ?? "{n/a}";
             var mireroRole = claims.FirstOrDefault(claim => claim.Type == "mirero.role")?.Value ?? "{n/a}";
-            
+
+            var now = DateTime.Now.ToString("O");
             return Json(new
             {
-                message = "super secret ApiOne service message !"
+                message = $"{now} --> super secret ApiOne service message !"
             });
         }
         
